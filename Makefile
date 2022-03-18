@@ -2,13 +2,12 @@
 CC := g++
 INCLUDES := src/includes
 CCFLAGS := -I$(INCLUDES) -std=c++17 -lstdc++fs -Wall
-DBGFLAGS := -g
 CCOBJFLAGS := $(CCFLAGS) -c
 
 OUT_PATH := out
+OBJ_PATH := obj
 
 TARGET_NAME := cclipboard
-
 
 SRC := $(foreach x, $(SRC_PATH), $(wildcard $(addprefix $(x)/*,.cc*)))
 OBJ := $(addprefix $(OBJ_PATH)/, $(addsuffix .o, $(notdir $(basename $(SRC)))))
@@ -25,12 +24,6 @@ $(TARGET): $(OBJ)
 
 $(OBJ_PATH)/%.o: $(SRC_PATH)/%.cc*
 	$(CC) $(CCOBJFLAGS) -o $@ $<
-
-$(DBG_PATH)/%.o: $(SRC_PATH)/%.cc*
-	$(CC) $(CCOBJFLAGS) $(DBGFLAGS) -o $@ $<
-
-$(TARGET_DEBUG): $(OBJ_DEBUG)
-	$(CC) $(CCFLAGS) $(DBGFLAGS) $(OBJ_DEBUG) -o $@
 
 # phony rules
 .PHONY: makedir
