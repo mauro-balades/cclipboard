@@ -8,5 +8,5 @@ namespace cclipboard {
         ~CClipboard();
 
 
-    }
+    };
 }
