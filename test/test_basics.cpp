@@ -9,5 +9,7 @@ class BasicsTest : public ::testing::Test {
 
 TEST_F(BasicsTest, TestBackwardsCompat) {
     CClipboard clipboard();
+
+    
     ASSERT_TRUE(true);
 }
