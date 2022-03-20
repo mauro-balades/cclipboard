@@ -1,4 +1,6 @@
 
+#include "cclipboard_options.h"
+
 namespace cclipboard {
 
     class CClipboard {
