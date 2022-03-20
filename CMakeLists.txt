@@ -21,6 +21,10 @@ elseif(MSVC)
     option(gtest_force_shared_crt "Always use dynamic runtime library (default:on)" ON)
 endif()
 
+if (((UNIX AND NOT APPLE) OR CCLIPBOARD_FORCE_X11) AND NOT (CCLIPBOARD_FORCE_WIN32))
+    set(CCLIPBOARD_BUILD_X11 TRUE)
+endif()
+
 # Set compiler flags
 if (CMAKE_COMPILER_IS_GNUCC)
     set(GCC_COMPILE_FLAGS "-std=c99 -Wall -pedantic -g")
@@ -35,6 +39,18 @@ endif()
 
 if (CMAKE_COMPILER_IS_GNUCXX)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -pedantic -g")
+    SET(CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} ${GCC_COVERAGE_LINK_FLAGS}")
+endif()
+
+# Dependencies
+if (CCLIPBOARD_BUILD_X11)
+    include(FindPkgConfig REQUIRED)
+    pkg_check_modules(X11 xcb REQUIRED)
+    find_package(Threads REQUIRED)
+
+    include_directories(${X11_INCLUDE_DIRS})
+    link_directories(${X11_LIBRARY_DIRS})
+    set(CCLIPBOARD_PRIVATE_LIBS ${CCLIPBOARD_PRIVATE_LIBS} ${X11_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
 endif()
 
 # Include directories
@@ -46,8 +62,8 @@ configure_file("src/include/cclipboard-config.h.in" "src/include/cclipboard-conf
 
 # Source files
 set(HEADERS
-    src/include/cclipboard_options.h
-    src/include/cclipboard.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/include/cclipboard_options.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/include/cclipboard.h
     ${CMAKE_CURRENT_BINARY_DIR}/src/include/cclipboard-config.h
 )
 
@@ -64,7 +80,6 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 add_library(clipboard ${HEADERS} ${SOURCE})
 target_link_libraries(clipboard LINK_PRIVATE ${CCLIPBOARD_PRIVATE_LIBS})
 if (CCLIPBOARD_ADD_SOVERSION)
-    # Not by default because my file system doesn't support symlinks
     set_target_properties(clipboard PROPERTIES SOVERSION ${CCLIPBOARD_VERSION} VERSION ${CCLIPBOARD_VERSION})
 endif()
 
@@ -81,7 +96,7 @@ if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/third_party/googletest/googletest)
     include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
     add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/test)
 
-    set(CMAKE_USE_PTHREADS_INIT ${LIBCLIPBOARD_USE_PTHREADS_INIT})
+    set(CMAKE_USE_PTHREADS_INIT ${CCLIPBOARD_USE_PTHREADS_INIT})
 else()
 
 endif()
@@ -89,6 +104,17 @@ endif()
 # Build sample executables
 # TODO
 # add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/samples)
+
+# Pkgconfig
+include(FindPkgConfig QUIET)
+if (PKGCONFIG_FOUND)
+    string(REPLACE "-l" "" CCLIPBOARD_PRIVATE_LIBS_LIST "${CCLIPBOARD_PRIVATE_LIBS}")
+    string(REPLACE ";" " -l" CCLIPBOARD_PRIVATE_LIBS_LIST "${CCLIPBOARD_PRIVATE_LIBS_LIST}")
+    string(STRIP "${CCLIPBOARD_PRIVATE_LIBS_LIST}" CCLIPBOARD_PRIVATE_LIBS_LIST)
+    configure_file("cclipboard.pc.in" "${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}/pkgconfig/cclipboard.pc" @ONLY)
+    install(FILES "${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}/pkgconfig/cclipboard.pc" DESTINATION "lib/pkgconfig")
+endif()
+
 
 # Install options
 install(TARGETS clipboard

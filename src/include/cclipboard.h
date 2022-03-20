@@ -4,9 +4,16 @@
 namespace cclipboard {
 
     class CClipboard {
-        CClipboard(CClipboard_options* p_options);
-        ~CClipboard();
 
+        public:
+            CClipboard();
+            CClipboard(CClipboard_options* p_options);
+            // ~CClipboard();
+
+            char* paste();
+
+        private:
+            CClipboard_options _options;
 
     };
 }

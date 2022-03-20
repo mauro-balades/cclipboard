@@ -1,4 +1,0 @@
-/usr/local/lib/libclipboard.a
-/usr/local/include/cclipboard_options.h
-/usr/local/include/cclipboard.h
-/usr/local/include/cclipboard-config.h
