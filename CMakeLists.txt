@@ -68,6 +68,24 @@ if (CCLIPBOARD_ADD_SOVERSION)
     set_target_properties(clipboard PROPERTIES SOVERSION ${CCLIPBOARD_VERSION} VERSION ${CCLIPBOARD_VERSION})
 endif()
 
+# Tests
+if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/third_party/googletest/googletest)
+    # gtest does not play well with pthreads and mingw
+    if (gtest_disable_pthreads)
+        set(CCLIPBOARD_USE_PTHREADS_INIT ${CMAKE_USE_PTHREADS_INIT})
+        unset(CMAKE_USE_PTHREADS_INIT)
+    endif()
+
+    add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/third_party/googletest EXCLUDE_FROM_ALL)
+    enable_testing()
+    include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
+    add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/test)
+
+    set(CMAKE_USE_PTHREADS_INIT ${LIBCLIPBOARD_USE_PTHREADS_INIT})
+else()
+
+endif()
+
 # Build sample executables
 # TODO
 # add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/samples)
