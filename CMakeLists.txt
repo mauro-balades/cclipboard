@@ -1,7 +1,11 @@
 # cclipboard cmake configuration file
 
 cmake_minimum_required(VERSION 2.8)
-project(cclipboard)
+
+set(CMAKE_C_COMPILER "gcc")
+set(CMAKE_CXX_COMPILER "g++")
+
+project(clipboard LANGUAGES CXX)
 
 # Defines and options
 set(CCLIPBOARD_VERSION_MAJOR 1 CACHE STRING "cclipboard major version number")
@@ -27,7 +31,7 @@ endif()
 
 # Set compiler flags
 if (CMAKE_COMPILER_IS_GNUCC)
-    set(GCC_COMPILE_FLAGS "-std=c99 -Wall -pedantic -g")
+    set(GCC_COMPILE_FLAGS "-std=c99 -Wall -pedantic -g ")
 
     execute_process(COMMAND ${CMAKE_C_COMPILER} -dumpversion
                     OUTPUT_VARIABLE GCC_VERSION)
@@ -39,15 +43,23 @@ endif()
 
 if (CMAKE_COMPILER_IS_GNUCXX)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -pedantic -g")
-    SET(CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} ${GCC_COVERAGE_LINK_FLAGS}")
+    set(GCC_COVERAGE_LINK_FLAGS "-lX11")
+    SET(CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} ${GCC_COVERAGE_LINK_FLAGS} -lX11")
 endif()
 
 # Dependencies
 if (CCLIPBOARD_BUILD_X11)
+
+    include(CheckIncludeFiles)
+    check_include_files(xcb/xcb.h HAVE_XCB_XLIB_H)
+
+    if (HAVE_XCB_XLIB_H)
+        add_definitions(-DHAVE_XCB_XLIB_H)
+    endif()
+
     include(FindPkgConfig REQUIRED)
     pkg_check_modules(X11 xcb REQUIRED)
     find_package(Threads REQUIRED)
-
     include_directories(${X11_INCLUDE_DIRS})
     link_directories(${X11_LIBRARY_DIRS})
     set(CCLIPBOARD_PRIVATE_LIBS ${CCLIPBOARD_PRIVATE_LIBS} ${X11_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
@@ -124,7 +136,6 @@ install(TARGETS clipboard
 install(FILES ${HEADERS} DESTINATION include)
 
 # Uninstall target
-# TODO
 # configure_file(
 #     "${CMAKE_CURRENT_SOURCE_DIR}/cmake_uninstall.cmake.in"
 #     "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake"

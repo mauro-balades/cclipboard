@@ -1,16 +1,13 @@
 
 #include <cclipboard.h>
 #include <gtest/gtest.h>
-
-using namespace cclipboard;
+#include <stdio.h>
 
 class BasicsTest : public ::testing::Test {
 };
-#include <stdio.h>
 
 TEST_F(BasicsTest, TestBackwardsCompat) {
-    CClipboard clipboard();
-    printf("%s", clipboard().paste());
+    cclipboard::CClipboard* clipboard = new cclipboard::CClipboard();
 
-    ASSERT_TRUE(true);
+    ASSERT_TRUE(strcmp("test", clipboard->paste()) == 0);
 }

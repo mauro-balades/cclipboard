@@ -1,0 +1,7 @@
+
+#ifndef _LIBCLIPBOARD_CONFIG_H
+
+#cmakedefine CCLIPBOARD_BUILD_X11
+
+#define _LIBCLIPBOARD_CONFIG_H
+#endif

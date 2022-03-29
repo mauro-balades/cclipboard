@@ -61,3 +61,5 @@ test/Testing/
 test/CTestTestfile.cmake
 bin/
 lib/
+Testing/
+install_manifest.txt

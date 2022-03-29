@@ -1,5 +1,6 @@
 
 #include "cclipboard_options.h"
+#include "cclipboard-x11.h"
 
 namespace cclipboard {
 
@@ -14,6 +15,7 @@ namespace cclipboard {
 
         private:
             CClipboard_options _options;
+            x11_clipboard* _clipboard = new x11_clipboard;
 
     };
 }
