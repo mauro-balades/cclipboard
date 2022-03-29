@@ -1,4 +1,10 @@
 
+#ifndef CCLIPBOARD_H
+#define CCLIPBOARD_H
+
+#include <stdio.h>
+#include <string>
+
 #include "cclipboard_options.h"
 #include "cclipboard-x11.h"
 
@@ -21,3 +27,6 @@ namespace cclipboard {
 
     };
 }
+
+
+#endif /* CCLIPBOARD_H */

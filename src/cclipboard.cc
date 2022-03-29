@@ -2,10 +2,6 @@
 #include "cclipboard_options.h"
 #include "cclipboard.h"
 
-#ifndef CCLIPBOARD_H
-#define CCLIPBOARD_H
-
-
 namespace cclipboard {
 
   CClipboard::CClipboard() {
@@ -23,9 +19,8 @@ namespace cclipboard {
     return (char *)dest.c_str();
   }
 
-  void CClipboard::copy(std::string string) {
-    this->_clipboard->copy(string.c_str(), string.length());
+  void CClipboard::copy(std::string p_string) {
+    this->_clipboard->copy(p_string.c_str(), p_string.length());
   }
 }
 
-#endif /* CCLIPBOARD_H */
