@@ -1,10 +1,12 @@
 
-#include "cclipboard-x11.h"
 
 #ifndef CCLIPBOARD_UTILS_H
 #define CCLIPBOARD_UTILS_H
 
+#include "cclipboard-x11.h"
+
 namespace cclipboard_utils {
+    void handle_x11_clipboard_events();
     void handle_x11_clipboard_events(x11_clipboard* self) {
         xcb_generic_event_t* event;
 

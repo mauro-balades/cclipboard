@@ -12,6 +12,8 @@ namespace cclipboard {
             // ~CClipboard();
 
             char* paste();
+            void copy(std::string p_string);
+            // TODO: void copy(const char* p_string);
 
         private:
             CClipboard_options _options;

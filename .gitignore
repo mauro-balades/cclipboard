@@ -63,3 +63,4 @@ bin/
 lib/
 Testing/
 install_manifest.txt
+Makefile

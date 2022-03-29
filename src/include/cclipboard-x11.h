@@ -106,6 +106,8 @@ class x11_clipboard {
         friend class clipboard;
 
     private:
+
+
         xcb_connection_t* _xcb_connection;
         xcb_window_t _xcb_window;
 

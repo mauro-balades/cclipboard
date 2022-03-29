@@ -22,6 +22,10 @@ namespace cclipboard {
 
     return (char *)dest.c_str();
   }
+
+  void CClipboard::copy(std::string string) {
+    this->_clipboard->copy(string.c_str(), string.length());
+  }
 }
 
 #endif /* CCLIPBOARD_H */
